@@ -4,6 +4,13 @@ Email Tracker
 
 EmailTracker allows you to keep track of all messages send from your django site.
 
+Installation
+-----------
+
+In order to install the email tracker::
+
+	pip install git+git://github.com/MagicSolutions/django-email-tracker.git
+	
 
 Quick start
 -----------
@@ -15,7 +22,7 @@ Quick start
         'email_tracker',
     )
 
-2. Add email_tracker.south_migrations to your SOUTH_MIGRATION_MODULES setting:
+2. Add email_tracker.south_migrations to your SOUTH_MIGRATION_MODULES setting::
 	
 	SOUTH_MIGRATION_MODULES = {
 	    'email_tracker': 'email_tracker.south_migrations',
