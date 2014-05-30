@@ -1,5 +1,5 @@
-import datetime
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class EmailCategory(models.Model):
@@ -7,6 +7,10 @@ class EmailCategory(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        verbose_name = _('Email Category')
+        verbose_name_plural = _('Email Categories')
 
 
 class TrackedEmail(models.Model):
@@ -25,3 +29,5 @@ class TrackedEmail(models.Model):
 
     class Meta:
         ordering = '-created_at',
+        verbose_name = _('Tracked Email')
+        verbose_name_plural = _('Tracked Emails')
