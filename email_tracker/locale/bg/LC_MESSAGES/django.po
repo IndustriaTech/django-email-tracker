@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: django-email-tracker 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-30 16:35+0300\n"
+"PO-Revision-Date: 2014-05-30 16:35+0300\n"
+"Last-Translator: Venelina Yanakieva <vili@magicsolutions.bg>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: models.py:12
+msgid "Email Category"
+msgstr "Email Категория"
+
+#: models.py:13
+msgid "Email Categories"
+msgstr "Email Категории"
+
+#: models.py:17
+msgid "Subject"
+msgstr "Заглавие"
+
+#: models.py:18
+msgid "From email"
+msgstr "От"
+
+#: models.py:19
+msgid "Recipients"
+msgstr "Получатели"
+
+#: models.py:20
+msgid "Cc"
+msgstr ""
+
+#: models.py:21
+msgid "Bcc"
+msgstr ""
+
+#: models.py:22
+msgid "Body"
+msgstr "Съдържание"
+
+#: models.py:23
+msgid "Is sent"
+msgstr "Изпратено"
+
+#: models.py:24
+msgid "Category"
+msgstr "Категория"
+
+#: models.py:25
+msgid "Created at"
+msgstr "Създадено"
+
+#: models.py:32
+msgid "Tracked Email"
+msgstr "Регистриран email"
+
+#: models.py:33
+msgid "Tracked Emails"
+msgstr "Регистрирани мейли"

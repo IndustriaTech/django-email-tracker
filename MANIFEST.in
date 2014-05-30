@@ -1,4 +1,4 @@
 include LICENSE
 include README.rst
-include locale/bg/LC_MESSAGES/django.po
-include locale/bg/LC_MESSAGES/django.mo
+include email_tracker/locale/bg/LC_MESSAGES/django.po
+include email_tracker/locale/bg/LC_MESSAGES/django.mo

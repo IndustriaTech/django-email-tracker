@@ -14,15 +14,15 @@ class EmailCategory(models.Model):
 
 
 class TrackedEmail(models.Model):
-    subject = models.CharField(max_length=512)
-    from_email = models.CharField(max_length=255)
-    recipients = models.TextField()
-    cc = models.TextField()
-    bcc = models.TextField()
-    body = models.TextField()
-    is_sent = models.BooleanField()
-    category = models.ForeignKey(EmailCategory, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    subject = models.CharField(max_length=512, verbose_name=_('Subject'))
+    from_email = models.CharField(max_length=255, verbose_name=_('From email'))
+    recipients = models.TextField(verbose_name=_('Recipients'))
+    cc = models.TextField(verbose_name=_('Cc'))
+    bcc = models.TextField(verbose_name=_('Bcc'))
+    body = models.TextField(verbose_name=_('Body'))
+    is_sent = models.BooleanField(verbose_name=_('Is sent'))
+    category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     def __unicode__(self):
         return 'Mail to {}'.format(self.recipients)
