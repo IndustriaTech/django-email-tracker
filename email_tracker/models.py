@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import linebreaks
+from django.utils.safestring import mark_safe
 
 
 class EmailCategory(models.Model):
@@ -19,7 +21,8 @@ class TrackedEmail(models.Model):
     recipients = models.TextField(verbose_name=_('Recipients'))
     cc = models.TextField(verbose_name=_('Cc'))
     bcc = models.TextField(verbose_name=_('Bcc'))
-    body = models.TextField(verbose_name=_('Body'))
+    body = models.TextField(verbose_name=_('Body'), editable=False)
+    content_type = models.CharField(max_length=64, default='plain')
     is_sent = models.BooleanField(verbose_name=_('Is sent'))
     category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
@@ -31,3 +34,9 @@ class TrackedEmail(models.Model):
         ordering = '-created_at',
         verbose_name = _('Tracked Email')
         verbose_name_plural = _('Tracked Emails')
+
+    def get_body(self):
+        if self.content_type == 'plain':
+            return mark_safe(linebreaks(self.body))
+        return self.body
+
