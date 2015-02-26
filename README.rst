@@ -15,21 +15,25 @@ In order to install the email tracker::
 Quick start
 -----------
 
-1. Add "email_tracker" to your INSTALLED_APPS setting like this::
+1. Add :code:`email_tracker` to your :code:`INSTALLED_APPS` setting like this::
 
     INSTALLED_APPS = (
         ...
         'email_tracker',
     )
 
-2. Add email_tracker.south_migrations to your SOUTH_MIGRATION_MODULES setting::
+2. Set your :code:`EMAIL_BACKEND` setting::
+
+    EMAIL_BACKEND = 'email_tracker.backends.EmailTrackerBackend'
+
+3. If you use South you need to add :code:`email_tracker.south_migrations` to your :code:`SOUTH_MIGRATION_MODULES` setting::
 	
 	SOUTH_MIGRATION_MODULES = {
 	    'email_tracker': 'email_tracker.south_migrations',
 	}
 
-3. Run `python manage.py migrate` to create the email_tracker models.
+4. Sync your database with :code:`python manage.py syncdb` or of you use South :code:`python manage.py migrate` to create the email_tracker models.
 
-4. Start the development server and visit http://127.0.0.1:8000/admin/email_tracker/
+5. Start the development server and visit http://127.0.0.1:8000/admin/email_tracker/
    to observe created mails and categories (you'll need the Admin app enabled).
 
