@@ -32,7 +32,7 @@ Quick start
 	    'email_tracker': 'email_tracker.south_migrations',
 	}
 
-4. Sync your database with :code:`python manage.py syncdb` or of you use South :code:`python manage.py migrate` to create the email_tracker models.
+4. Sync your database with :code:`python manage.py syncdb` or if you use South :code:`python manage.py migrate` to create the email_tracker models.
 
 5. Start the development server and visit http://127.0.0.1:8000/admin/email_tracker/
    to observe created mails and categories (you'll need the Admin app enabled).
