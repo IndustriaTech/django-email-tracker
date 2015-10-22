@@ -23,7 +23,7 @@ class TrackedEmail(models.Model):
     bcc = models.TextField(verbose_name=_('Bcc'))
     body = models.TextField(verbose_name=_('Body'), editable=False)
     content_type = models.CharField(max_length=64, default='plain')
-    is_sent = models.BooleanField(verbose_name=_('Is sent'))
+    is_sent = models.BooleanField(verbose_name=_('Is sent'), default=False)
     category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
