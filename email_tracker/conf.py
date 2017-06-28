@@ -1,3 +1,8 @@
+try:
+    import anymail
+except ImportError:
+    anymail = False
+
 
 class Settings:
     """
@@ -21,4 +26,5 @@ class Settings:
 
 settings = Settings(
     EMAIL_TRACKER_BACKEND='django.core.mail.backends.smtp.EmailBackend',
+    EMAIL_TRACKER_USE_ANYMAIL=bool(anymail),
 )
