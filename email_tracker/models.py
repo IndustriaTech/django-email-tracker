@@ -132,7 +132,7 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
     def _on_tracking_handler(sender, event, esp_name, **kwargs):
         try:
             tracked_email = TrackedEmail.objects.get(esp_message_id=event.message_id)
-        except TrackedEmail.DoesNotExists:
+        except TrackedEmail.DoesNotExist:
             return
 
         tracked_email.events.create(
