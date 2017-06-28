@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'email_tracker',
 ]
 
-EMAIL_BACKEND = 'email_tracker.backends.LocmemTrackerBackend'
+EMAIL_BACKEND = 'email_tracker.backends.EmailTrackerBackend'
+EMAIL_TRACKER_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 SECRET_KEY = 'very secred key ;)'

@@ -1,11 +1,49 @@
 import warnings
+import threading
 
-from django.core import mail
-from django.core.mail.backends.smtp import EmailBackend
+from django.core.mail import get_connection
+from django.core.mail.backends.base import BaseEmailBackend
+
+from email_tracker.conf import settings
 from email_tracker.models import TrackedEmail
 
 
-class EmailTrackerBackend(EmailBackend):
+class EmailBackendWrapper(BaseEmailBackend):
+    """
+    Email backend wrapper that will wraps backend configured in
+    settings.EMAIL_TRACKER_BACKEND
+    """
+
+    def __init__(self, **kwargs):
+        super(EmailBackendWrapper, self).__init__(**kwargs)
+        self.connection = get_connection(settings.EMAIL_TRACKER_BACKEND, **kwargs)
+        self._lock = threading.RLock()
+
+    def open(self):
+        return self.connection.open()
+
+    def close(self):
+        return self.connection.close()
+
+    def send_messages(self, email_messages):
+        if not email_messages:
+            return
+        with self._lock:
+            new_conn_created = self.open()
+            num_sent = 0
+            for message in email_messages:
+                sent = self._send(message)
+                if sent:
+                    num_sent += 1
+            if new_conn_created:
+                self.close()
+        return num_sent
+
+    def _send(self, message):
+        return self.connection.send_messages([message])
+
+
+class EmailTrackerBackend(EmailBackendWrapper):
     """
     Sends one or more EmailMessage objects and returns the number of email
     messages sent.
@@ -14,53 +52,13 @@ class EmailTrackerBackend(EmailBackend):
 
     """
 
-    def send_messages(self, email_messages):
-        if not email_messages:
-            return
-        with self._lock:
-            new_conn_created = self.open()
-            if not self.connection:
-                # We failed silently on open().
-                # Trying to send would be pointless.
-                return
-            num_sent = 0
-            for message in email_messages:
-                sent = self._send(message)
-                if sent:
-                    num_sent += 1
-                self.track_message(message, bool(sent))
-            if new_conn_created:
-                self.close()
-        return num_sent
+    def _send(self, message):
+        sent = super(EmailTrackerBackend, self)._send(message)
+        self.track_message(message, bool(sent))
+        return sent
 
     def track_message(self, message, is_sent):
         TrackedEmail.objects.create_from_message(message, is_sent=is_sent)
-
-
-class LocmemTrackerBackend(EmailTrackerBackend):
-    """
-    Similar to Django's builtin locmem email backend used for testing
-    but preserve SMPT email backend API
-    """
-    def __init__(self, *args, **kwargs):
-        super(LocmemTrackerBackend, self).__init__(*args, **kwargs)
-        if not hasattr(mail, 'outbox'):
-            mail.outbox = []
-
-    def open(self):
-        # Fake SMTP connection creation
-        self.connection = True
-        # Tell that the connection was already created
-        return False
-
-    def close(self):
-        # Do nothing because we do not have real connection
-        pass
-
-    def _send(self, message):
-        # Fake sending the email
-        mail.outbox.append(message)
-        return True
 
 
 def create_tracked_email(email_message, is_sent):

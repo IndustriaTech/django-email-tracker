@@ -5,9 +5,11 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 from email_tracker.models import TrackedEmail
+from .settings import EMAIL_BACKEND
 
 
-@override_settings(EMAIL_BACKEND='email_tracker.backends.LocmemTrackerBackend')
+# We need to overwrite EMAIL_BACKED because Django was overwritten it
+@override_settings(EMAIL_BACKEND=EMAIL_BACKEND)
 class EmailBackendTestCase(TestCase):
 
     def test_send_new_mail(self):
