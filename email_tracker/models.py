@@ -37,6 +37,5 @@ class TrackedEmail(models.Model):
 
     def get_body(self):
         if self.content_type == 'plain':
-            return mark_safe(linebreaks(self.body))
+            return mark_safe(linebreaks(self.body, autoescape=True))
         return self.body
-
