@@ -108,7 +108,7 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
         message._tracked_email = TrackedEmail.objects.create_from_message(message)
 
     @receiver(post_send)
-    def _on_post_send_handler(sedner, message, status, esp_name, **kwargs):
+    def _on_post_send_handler(sender, message, status, esp_name, **kwargs):
         try:
             tracked_email = message._tracked_email
         except AttributeError:
@@ -118,7 +118,7 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
 
         tracked_email.esp_message_id = status.message_id
 
-        if status.status == 'sent':
+        if status.status.union(('sent', 'queued')):
             tracked_email.is_sent = True
 
         type(tracked_email).objects.filter(
