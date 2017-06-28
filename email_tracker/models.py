@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
 
+from email_tracker.conf import settings
+
 
 # Managers
 
@@ -79,3 +81,27 @@ class TrackedEmail(models.Model):
         if self.content_type == 'plain':
             return mark_safe(linebreaks(self.body, autoescape=True))
         return self.body
+
+
+if settings.EMAIL_TRACKER_USE_ANYMAIL:
+    from django.dispatch import receiver
+    from anymail.signals import pre_send, post_send
+
+    @receiver(pre_send)
+    def _on_pre_send_handler(sender, message, esp_name, **kwargs):
+        message._tracked_email = TrackedEmail.objects.create_from_message(message)
+
+    @receiver(post_send)
+    def _on_post_send_handler(sedner, message, status, esp_name, **kwargs):
+        if status.status == 'sent':
+            try:
+                tracked_email = message._tracked_email
+            except AttributeError:
+                # If for some reason pre_send signal was not send for this
+                # message then _tracked_email will be unset
+                return
+            else:
+                tracked_email.is_sent = True
+                type(tracked_email).objects.filter(
+                    pk=tracked_email.pk
+                ).update(is_sent=True)
