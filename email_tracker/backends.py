@@ -1,39 +1,20 @@
+import warnings
+
 from django.core import mail
 from django.core.mail.backends.smtp import EmailBackend
-from email_tracker.models import TrackedEmail, EmailCategory
-
-
-def create_tracked_email(email_message, is_sent):
-    header_category = email_message.extra_headers.get('X-Category')
-    if header_category:
-        category, created = EmailCategory.objects.get_or_create(
-            title=header_category
-        )
-    else:
-        category = None
-
-    tracked_email = TrackedEmail(
-        from_email=email_message.from_email,
-        subject=email_message.subject,
-        body=email_message.body,
-        recipients=(', ').join(email_message.recipients()),
-        cc=(', ').join(email_message.cc),
-        bcc=(', ').join(email_message.bcc),
-        category=category,
-        is_sent=is_sent,
-    ).save()
-    return tracked_email
+from email_tracker.models import TrackedEmail
 
 
 class EmailTrackerBackend(EmailBackend):
+    """
+    Sends one or more EmailMessage objects and returns the number of email
+    messages sent.
+    Creates EmailMessage and EmailCategory (if needed) for every message
+    with defined extra header
+
+    """
 
     def send_messages(self, email_messages):
-        """
-        Sends one or more EmailMessage objects and returns the number of email
-        messages sent.
-        Creates EmailMessage and EmailCategory (if needed) for every message with defined extra header
-
-        """
         if not email_messages:
             return
         with self._lock:
@@ -47,10 +28,13 @@ class EmailTrackerBackend(EmailBackend):
                 sent = self._send(message)
                 if sent:
                     num_sent += 1
-                create_tracked_email(message, bool(sent))
+                self.track_message(message, bool(sent))
             if new_conn_created:
                 self.close()
         return num_sent
+
+    def track_message(self, message, is_sent):
+        TrackedEmail.objects.create_from_message(message, is_sent=is_sent)
 
 
 class LocmemTrackerBackend(EmailTrackerBackend):
@@ -77,3 +61,11 @@ class LocmemTrackerBackend(EmailTrackerBackend):
         # Fake sending the email
         mail.outbox.append(message)
         return True
+
+
+def create_tracked_email(email_message, is_sent):
+    warnings.warn('create_tracked_email is deprecated. Use TrackedEmail.objects.create_from_message instead',
+                  DeprecationWarning,
+                  stacklevel=2)
+    return TrackedEmail.objects.create_from_message(email_message,
+                                                    is_sent=is_sent)

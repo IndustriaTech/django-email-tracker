@@ -4,8 +4,43 @@ from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
 
 
+# Managers
+
+class EmailCategoryManager(models.Manager):
+    def get_for_message(self, message):
+        """
+        Get or create category for given EmailMessage object
+        """
+        title = message.extra_headers.get('X-Category')
+        if not title:
+            return
+        instance, created = self.get_or_create(title=title)
+        return instance
+
+
+class TrackedEmailManager(models.Manager):
+    def create_from_message(self, message, is_sent=False):
+        """
+        Create TrackedEmail for given EmailMessage object
+        """
+        return self.create(
+            from_email=message.from_email,
+            subject=message.subject,
+            body=message.body,
+            recipients=(', ').join(message.recipients()),
+            cc=(', ').join(message.cc),
+            bcc=(', ').join(message.bcc),
+            category=EmailCategory.objects.get_for_message(message),
+            is_sent=is_sent,
+        )
+
+
+# Models
+
 class EmailCategory(models.Model):
     title = models.CharField(max_length=200, unique=True)
+
+    objects = EmailCategoryManager()
 
     def __unicode__(self):
         return self.title
@@ -26,6 +61,8 @@ class TrackedEmail(models.Model):
     is_sent = models.BooleanField(verbose_name=_('Is sent'), default=False)
     category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+
+    objects = TrackedEmailManager()
 
     def __str__(self):
         return 'Mail to {}'.format(self.recipients)
