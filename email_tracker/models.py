@@ -27,8 +27,11 @@ class TrackedEmail(models.Model):
     category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
-    def __unicode__(self):
+    def __str__(self):
         return 'Mail to {}'.format(self.recipients)
+
+    def __unicode__(self):
+        return u'Mail to {}'.format(self.recipients)
 
     class Meta:
         ordering = '-created_at',
