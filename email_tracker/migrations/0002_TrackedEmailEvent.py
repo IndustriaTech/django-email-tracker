@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='trackedemail',
             name='esp_message_id',
-            field=models.CharField(blank=True, max_length=254, null=True, unique=True),
+            field=models.CharField(blank=True, max_length=254, null=True, unique=True, editable=False, verbose_name='ESP message ID'),
         ),
         migrations.AddField(
             model_name='trackedemailevent',

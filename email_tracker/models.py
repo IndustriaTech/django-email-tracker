@@ -65,7 +65,7 @@ class TrackedEmail(models.Model):
     is_sent = models.BooleanField(verbose_name=_('Is sent'), default=False)
     category = models.ForeignKey(EmailCategory, null=True, blank=True, verbose_name=_('Category'), on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
-    esp_message_id = models.CharField(max_length=254, unique=True, blank=True, null=True)
+    esp_message_id = models.CharField(max_length=254, unique=True, blank=True, null=True, editable=False, verbose_name=_('ESP message ID'))
 
     objects = TrackedEmailManager()
 

@@ -14,6 +14,7 @@ class TrackedEmailAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'category')
     list_display = ('__str__', 'created_at')
     readonly_fields = (
+        'esp_message_id',
         'subject', 'from_email', 'recipients', 'cc', 'bcc',
         'get_body', 'is_sent', 'category', 'created_at', 'content_type'
     )
