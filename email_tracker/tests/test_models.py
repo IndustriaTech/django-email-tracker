@@ -6,9 +6,9 @@ from django.test import TestCase
 from email_tracker.models import TrackedEmail, EmailCategory
 
 
-class EmailTrackerAdminTestCase(TestCase):
+class EmailTrackerModelTestCase(TestCase):
     def setUp(self):
-        super(EmailTrackerAdminTestCase, self).setUp()
+        super(EmailTrackerModelTestCase, self).setUp()
         self.category = EmailCategory.objects.create(title='Test Mail')
 
     def test_create_mail_from_message(self):
@@ -66,3 +66,13 @@ class EmailTrackerAdminTestCase(TestCase):
 
         tracked_email = TrackedEmail.objects.create_from_message(message)
         self.assertEqual(tracked_email.category, self.category)
+
+    def test_changing_is_sent_to_true(self):
+        email = TrackedEmail.objects.create(is_sent=False)
+        email.events.create(event='sent')
+        self.assertTrue(TrackedEmail.objects.filter(pk=email.pk, is_sent=True).exists())
+
+    def test_changing_is_sent_to_false(self):
+        email = TrackedEmail.objects.create(is_sent=True)
+        email.events.create(event='rejected')
+        self.assertTrue(TrackedEmail.objects.filter(pk=email.pk, is_sent=False).exists())

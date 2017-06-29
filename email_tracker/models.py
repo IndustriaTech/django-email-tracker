@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
@@ -111,9 +113,36 @@ class TrackedEmailEvent(models.Model):
     def __str__(self):
         return u'{self.event} at {self.created_at}'.format(self=self)
 
+    def is_mail_sent(self):
+        """
+        Method that will determine based of the event is it for send or rejected email.
+        It is used by post_save handler in order to change the status of email.
+        If the result is None then post_save handler will not change the status of the mail
+        """
+        if self.event in ('sent', 'delivered'):
+            return True
+        elif self.event in ('rejected', 'failed', 'bounced'):
+            return False
+
+
+@receiver(post_save, sender=TrackedEmailEvent)
+def _on_post_save_event_handler(sender, instance, created=False, raw=False, **kwargs):
+    if raw or not created:
+        return
+
+    is_sent = instance.is_mail_sent()
+
+    if is_sent is None:
+        # If is_sent is None we will not change anything
+        return
+
+    TrackedEmail.objects.filter(
+        pk=instance.email_id,
+        is_sent=not is_sent,
+    ).update(is_sent=is_sent)
+
 
 if settings.EMAIL_TRACKER_USE_ANYMAIL:
-    from django.dispatch import receiver
     from anymail.signals import pre_send, post_send, tracking
 
     @receiver(pre_send)
