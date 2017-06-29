@@ -21,6 +21,11 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('data', models.TextField(editable=False, verbose_name='Raw data for the event')),
             ],
+            options={
+                'ordering': ('-created_at',),
+                'verbose_name': 'Event',
+                'verbose_name_plural': 'Events',
+            },
         ),
         migrations.AlterField(
             model_name='trackedemail',
