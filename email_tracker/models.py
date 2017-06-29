@@ -13,10 +13,17 @@ class EmailCategoryManager(models.Manager):
         """
         Get or create category for given EmailMessage object
         """
-        title = message.extra_headers.get('X-Category')
-        if not title:
-            return
-        instance, created = self.get_or_create(title=title)
+        # Try to get category from extra headers
+        category = message.extra_headers.get('X-Category')
+        if category:
+            instance, created = self.get_or_create(title=category)
+        else:
+            # If there is existing category which is same as the subject
+            # then use that, but does not create new category for every subject
+            try:
+                instance = self.get(title=message.subject)
+            except self.model.DoesNotExist:
+                return
         return instance
 
 
