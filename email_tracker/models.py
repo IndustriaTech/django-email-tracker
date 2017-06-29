@@ -93,6 +93,7 @@ class TrackedEmail(models.Model):
         if self.content_type == 'plain':
             return mark_safe(linebreaks(self.body, autoescape=True))
         return self.body
+    get_body.short_description = _('Body')
 
 
 @python_2_unicode_compatible
