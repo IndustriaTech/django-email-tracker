@@ -26,3 +26,4 @@ class EmailBackendTestCase(TestCase):
         self.assertEqual(tracked_email.from_email, 'from@example.com')
         self.assertEqual(tracked_email.recipients, 'to@example.com, to2@example.com')
         self.assertEqual(tracked_email.is_sent, True)
+        self.assertIsNotNone(tracked_email.esp_message_id)
