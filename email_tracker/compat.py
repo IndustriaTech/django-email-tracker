@@ -1,5 +1,7 @@
 import sys
 
+from django.core.mail import DNS_NAME
+
 PY2 = sys.version_info < (3, 0)
 
 try:
@@ -21,3 +23,23 @@ except ImportError:
             klass.__unicode__ = klass.__str__
             klass.__str__ = lambda self: self.__unicode__().encode('utf-8')
         return klass
+
+
+try:
+    from django.core.email.message import make_msgid
+except ImportError:
+    # Django 2.0 supports only Python 3. Use it from standart library
+    from email.utils import make_msgid
+
+try:
+    make_msgid(domain='example.com')
+except TypeError:
+    # Django < 1.8
+    pass
+else:
+    _make_msgid = make_msgid
+
+    def make_msgid(idstring=None):
+        return _make_msgid(idstring, domain=DNS_NAME)
+    make_msgid.__doc__ = _make_msgid.__doc__
+    make_msgid.__name__ = _make_msgid.__name__

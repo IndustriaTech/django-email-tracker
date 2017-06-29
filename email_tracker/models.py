@@ -25,15 +25,20 @@ class TrackedEmailManager(models.Manager):
         """
         Create TrackedEmail for given EmailMessage object
         """
+        try:
+            message_id = [val for key, val in message.extra_headers.items() if key.lower() == 'message-id'][0]
+        except IndexError:
+            message_id = None
         return self.create(
             from_email=message.from_email,
             subject=message.subject,
             body=message.body,
-            recipients=(', ').join(message.recipients()),
-            cc=(', ').join(message.cc),
-            bcc=(', ').join(message.bcc),
+            recipients=', '.join(message.recipients()),
+            cc=', '.join(message.cc),
+            bcc=', '.join(message.bcc),
             category=EmailCategory.objects.get_for_message(message),
             is_sent=is_sent,
+            esp_message_id=message_id,
         )
 
 

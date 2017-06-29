@@ -5,6 +5,7 @@ from django.core.mail import get_connection
 from django.core.mail.backends.base import BaseEmailBackend
 
 from email_tracker.conf import settings
+from email_tracker.compat import make_msgid
 from email_tracker.models import TrackedEmail
 
 
@@ -53,9 +54,15 @@ class EmailTrackerBackend(EmailBackendWrapper):
     """
 
     def _send(self, message):
+        # Ensure that message has ID before send in order to log it
+        self._ensure_message_id(message)
         sent = super(EmailTrackerBackend, self)._send(message)
         self.track_message(message, bool(sent))
         return sent
+
+    def _ensure_message_id(self, message):
+        if 'message-id' not in [key.lower() for key in message.extra_headers]:
+            message.extra_headers['Message-ID'] = make_msgid()
 
     def track_message(self, message, is_sent):
         TrackedEmail.objects.create_from_message(message, is_sent=is_sent)
