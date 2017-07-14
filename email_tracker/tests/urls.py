@@ -1,7 +1,7 @@
 try:
-    from django.urls import url, include
+    from django.urls import url
 except ImportError:
-    from django.conf.urls import url, include
+    from django.conf.urls import url
 
 from django.contrib import admin
 
@@ -9,5 +9,5 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 ]

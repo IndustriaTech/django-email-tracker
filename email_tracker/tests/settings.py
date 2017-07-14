@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     'email_tracker',
 ]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -46,4 +46,7 @@ TEMPLATES = [
     }
 ]
 
-SILENCED_SYSTEM_CHECKS = ['1_8.W001']  # Silance warning for using TEMPLATE_*
+SILENCED_SYSTEM_CHECKS = [
+    '1_8.W001',  # Silance warning for using TEMPLATE_*
+    '1_10.W001',  # Silance warning for using MIDDLEWARE_CLASSES
+]
