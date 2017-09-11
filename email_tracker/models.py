@@ -38,7 +38,7 @@ class TrackedEmailManager(models.Manager):
             message_id = [val for key, val in message.extra_headers.items() if key.lower() == 'message-id'][0]
         except IndexError:
             message_id = None
-        return self.create(
+        instance = self.create(
             from_email=message.from_email,
             subject=message.subject,
             body=message.body,
@@ -49,6 +49,13 @@ class TrackedEmailManager(models.Manager):
             is_sent=is_sent,
             esp_message_id=message_id,
         )
+        for content, mimetype in getattr(message, 'alternatives', ()):
+            if 'text' in mimetype:
+                instance.alternatives.create(
+                    mimetype=mimetype,
+                    content=content,
+                )
+        return instance
 
 
 # Models
@@ -96,6 +103,20 @@ class TrackedEmail(models.Model):
             return mark_safe(linebreaks(self.body, autoescape=True))
         return self.body
     get_body.short_description = _('Body')
+
+
+@python_2_unicode_compatible
+class TrackedEmailAlternative(models.Model):
+    email = models.ForeignKey(TrackedEmail, related_name='alternatives', on_delete=models.CASCADE)
+    mimetype = models.CharField(max_length=250)
+    content = models.TextField()
+
+    class Meta:
+        verbose_name = _('Alternative')
+        verbose_name_plural = _('Alternatives')
+
+    def __str__(self):
+        return self.mimetype
 
 
 @python_2_unicode_compatible

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.test import TestCase
 from email_tracker.models import TrackedEmail, EmailCategory
 
@@ -30,6 +30,26 @@ class EmailTrackerModelTestCase(TestCase):
         self.assertEqual(tracked_email.cc, 'cc@example.com')
         self.assertEqual(tracked_email.bcc, 'bcc@example.com')
         self.assertIsNone(tracked_email.category)
+
+    def test_create_alternative_from_multialternative_message(self):
+        message = EmailMultiAlternatives(
+            subject='Test Subject',
+            body='Text body',
+            from_email='from@example.com',
+            to=['to@example.com'],
+        )
+        message.attach_alternative(
+            '<html><body><p>html body</p></body></html>',
+            'text/html',
+        )
+        tracked_email = TrackedEmail.objects.create_from_message(message)
+        tracked_alternatives = list(tracked_email.alternatives.values('mimetype', 'content'))
+        self.assertEqual(tracked_alternatives, [
+            {
+                'mimetype': 'text/html',
+                'content': '<html><body><p>html body</p></body></html>',
+            }
+        ])
 
     def test_autocreate_category_from_message_headers(self):
         message = EmailMessage(
