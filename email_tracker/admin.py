@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from email_tracker.models import EmailCategory, TrackedEmail, TrackedEmailEvent
+from email_tracker.models import EmailCategory, TrackedEmail, TrackedEmailAlternative, TrackedEmailEvent
 
 
 class TrackedEmailEventInline(admin.TabularInline):
@@ -9,6 +9,14 @@ class TrackedEmailEventInline(admin.TabularInline):
     readonly_fields = 'event', 'created_at',
     max_num = extra = 0
     can_delete = False
+
+
+class TrackedEmailAlternativeInline(admin.StackedInline):
+    model = TrackedEmailAlternative
+    readonly_fields = 'mimetype', 'content',
+    max_num = extra = 0
+    can_delete = False
+    classes = 'collapse',
 
 
 class TrackedEmailAdmin(admin.ModelAdmin):
@@ -25,18 +33,18 @@ class TrackedEmailAdmin(admin.ModelAdmin):
                 'from_email',
                 'recipients',
                 ('cc', 'bcc'),
+                'category',
+                'created_at',
+                'is_sent',
             )
         }),
         (_('Body'), {
             'classes': ('collapse', ),
-            'fields': ('content_type', 'get_body')
-        }),
-        (None, {
-            'fields': ('category', 'created_at', 'is_sent'),
+            'fields': ('content_type', 'get_body'),
         }),
 
     )
-    inlines = (TrackedEmailEventInline, )
+    inlines = (TrackedEmailAlternativeInline, TrackedEmailEventInline, )
 
     list_filter = ('is_sent', 'created_at', 'category')
     list_display = ('created_at', 'subject', 'recipients', 'is_sent')
