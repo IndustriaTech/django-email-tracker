@@ -214,6 +214,6 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
         tracked_email.events.create(
             event=event.event_type,
             created_at=event.timestamp,
-            description=event.description,
-            data=data,
+            description=event.description or '',
+            data=data or '',
         )
