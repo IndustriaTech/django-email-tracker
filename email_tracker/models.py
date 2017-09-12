@@ -1,7 +1,10 @@
+import json
+
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
@@ -199,8 +202,16 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
         except TrackedEmail.DoesNotExist:
             return
 
+        data = event.esp_event
+        if isinstance(data, MultiValueDict):
+            data = dict(data)
+        try:
+            data = json.dumps(data, ensure_ascii=False)
+        except TypeError:
+            pass
+
         tracked_email.events.create(
             event=event.event_type,
             created_at=event.timestamp,
-            data=event.esp_event,
+            data=data,
         )
