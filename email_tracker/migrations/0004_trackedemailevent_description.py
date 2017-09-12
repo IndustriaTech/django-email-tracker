@@ -15,6 +15,5 @@ class Migration(migrations.Migration):
             model_name='trackedemailevent',
             name='description',
             field=models.TextField(default='', verbose_name='Description', editable=False),
-            preserve_default=False,
         ),
     ]

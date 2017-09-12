@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
             ('email', self.gf('django.db.models.fields.related.ForeignKey')(related_name='events', on_delete=models.PROTECT, to=orm['email_tracker.TrackedEmail'])),
             ('event', self.gf('django.db.models.fields.CharField')(max_length=254)),
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('data', self.gf('django.db.models.fields.TextField')()),
+            ('data', self.gf('django.db.models.fields.TextField')(default='')),
         ))
         db.send_create_signal('email_tracker', ['TrackedEmailEvent'])
 
@@ -62,7 +62,7 @@ class Migration(SchemaMigration):
         'email_tracker.trackedemailevent': {
             'Meta': {'ordering': "('-created_at',)", 'object_name': 'TrackedEmailEvent'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'data': ('django.db.models.fields.TextField', [], {}),
+            'data': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'email': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'events'", 'on_delete': 'models.PROTECT', 'to': "orm['email_tracker.TrackedEmail']"}),
             'event': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})

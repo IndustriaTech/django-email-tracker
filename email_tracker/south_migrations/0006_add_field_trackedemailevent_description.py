@@ -10,8 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'TrackedEmailEvent.description'
         db.add_column('email_tracker_trackedemailevent', 'description',
-                      self.gf('django.db.models.fields.TextField')(default=''),
-                      keep_default=False)
+                      self.gf('django.db.models.fields.TextField')(default=''))
 
 
     def backwards(self, orm):
@@ -50,8 +49,8 @@ class Migration(SchemaMigration):
         'email_tracker.trackedemailevent': {
             'Meta': {'ordering': "('-created_at',)", 'object_name': 'TrackedEmailEvent'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'data': ('django.db.models.fields.TextField', [], {}),
-            'description': ('django.db.models.fields.TextField', [], {}),
+            'data': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'description': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'email': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'events'", 'on_delete': 'models.PROTECT', 'to': "orm['email_tracker.TrackedEmail']"}),
             'event': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
