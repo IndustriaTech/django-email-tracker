@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import django.db.models.deletion
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -18,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('event', models.CharField(editable=False, max_length=254, verbose_name='Event')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
+                ('created_at', models.DateTimeField(editable=False, default=django.utils.timezone.now, verbose_name='Created at')),
                 ('data', models.TextField(editable=False, verbose_name='Raw data for the event')),
             ],
             options={
