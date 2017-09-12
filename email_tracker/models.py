@@ -128,6 +128,7 @@ class TrackedEmailEvent(models.Model):
     email = models.ForeignKey(TrackedEmail, related_name='events', on_delete=models.PROTECT)
     event = models.CharField(max_length=254, verbose_name=_('Event'), editable=False)
     created_at = models.DateTimeField(verbose_name=_('Created at'), editable=False, default=timezone.now)
+    description = models.TextField(verbose_name=_('Description'), editable=False)
     data = models.TextField(verbose_name=_('Raw data for the event'), editable=False)
 
     class Meta:
@@ -213,5 +214,6 @@ if settings.EMAIL_TRACKER_USE_ANYMAIL:
         tracked_email.events.create(
             event=event.event_type,
             created_at=event.timestamp,
+            description=event.description,
             data=data,
         )
