@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import linebreaks
 from django.utils.safestring import mark_safe
@@ -123,7 +124,7 @@ class TrackedEmailAlternative(models.Model):
 class TrackedEmailEvent(models.Model):
     email = models.ForeignKey(TrackedEmail, related_name='events', on_delete=models.PROTECT)
     event = models.CharField(max_length=254, verbose_name=_('Event'), editable=False)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+    created_at = models.DateTimeField(verbose_name=_('Created at'), editable=False, default=timezone.now)
     data = models.TextField(verbose_name=_('Raw data for the event'), editable=False)
 
     class Meta:

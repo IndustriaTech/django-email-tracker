@@ -53,7 +53,7 @@ class Migration(SchemaMigration):
         },
         'email_tracker.trackedemailevent': {
             'Meta': {'ordering': "('-created_at',)", 'object_name': 'TrackedEmailEvent'},
-            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'data': ('django.db.models.fields.TextField', [], {}),
             'email': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'events'", 'on_delete': 'models.PROTECT', 'to': "orm['email_tracker.TrackedEmail']"}),
             'event': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
