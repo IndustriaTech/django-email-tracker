@@ -6,7 +6,7 @@ from email_tracker.models import EmailCategory, TrackedEmail, TrackedEmailAltern
 
 class TrackedEmailEventInline(admin.TabularInline):
     model = TrackedEmailEvent
-    readonly_fields = 'event', 'description', 'created_at',
+    readonly_fields = 'event', 'recipient', 'description', 'created_at',
     max_num = extra = 0
     can_delete = False
 
