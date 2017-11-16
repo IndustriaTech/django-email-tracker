@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('mimetype', models.CharField(max_length=250)),
                 ('content', models.TextField()),
-                ('email', models.ForeignKey(related_name='alternatives', to='email_tracker.TrackedEmail')),
+                ('email', models.ForeignKey(related_name='alternatives', to='email_tracker.TrackedEmail', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Alternative',
