@@ -7,7 +7,7 @@ def get_long_description():
 
 setup(
     name='django-email-tracker',
-    version='0.8',
+    version='0.8.1',
     description='Email Tracker for Django',
     author='Venelina Yanakieva',
     author_email='vili@magicsolutions.bg',
