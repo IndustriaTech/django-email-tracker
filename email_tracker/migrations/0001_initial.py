@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('cc', models.TextField(verbose_name='Cc')),
                 ('bcc', models.TextField(verbose_name='Bcc')),
                 ('body', models.TextField(verbose_name='Body', editable=False)),
-                ('content_type', models.CharField(default=b'plain', max_length=64)),
+                ('content_type', models.CharField(default='plain', max_length=64)),
                 ('is_sent', models.BooleanField(default=False, verbose_name='Is sent')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
                 ('category', models.ForeignKey(verbose_name='Category', blank=True, to='email_tracker.EmailCategory', null=True, on_delete=models.PROTECT)),
